@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: ${DB_TEST_URL:jdbc:postgresql://127.0.0.1:5432/dime_test}
+    username: ${DB_TEST_USER:dime}
+    password: ${DB_PASSWORD:}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+dime:
+  security:
+    initial-admin-password: ""

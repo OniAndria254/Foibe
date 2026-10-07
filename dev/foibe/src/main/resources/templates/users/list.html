@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title th:text="#{users.title}">Utilisateurs</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h3" th:text="#{users.title}">Utilisateurs</h1>
+        <a class="btn btn-success" th:href="@{/users/new}" th:text="#{users.new}">Nouvel utilisateur</a>
+    </div>
+
+    <div class="alert alert-success" th:if="${notify}" th:text="${#messages.msg(notify)}"></div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+            <tr>
+                <th th:text="#{users.username}">Identifiant</th>
+                <th th:text="#{users.fullName}">Nom complet</th>
+                <th th:text="#{users.role}">Rôle</th>
+                <th th:text="#{users.enabled}">Actif</th>
+                <th class="text-end" th:text="#{members.actions}">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="u : ${users.content}">
+                <td th:text="${u.username}"></td>
+                <td th:text="${u.fullName}"></td>
+                <td th:text="${#messages.msg('user.role.' + u.role.name())}"></td>
+                <td>
+                    <span class="badge" th:classappend="${u.enabled} ? 'bg-success' : 'bg-secondary'"
+                          th:text="${#messages.msg('users.enabled.' + u.enabled)}"></span>
+                </td>
+                <td class="text-end">
+                    <a class="btn btn-sm btn-outline-primary" th:href="@{/users/{id}/password(id=${u.id})}" th:text="#{users.resetPassword}">Mot de passe</a>
+                    <button th:if="${u.enabled}" class="btn btn-sm btn-outline-secondary"
+                            th:attr="form=|form-disable-${u.id}|" type="submit" th:text="#{users.disable}">Désactiver</button>
+                    <button th:if="${!u.enabled}" class="btn btn-sm btn-outline-success"
+                            th:attr="form=|form-enable-${u.id}|" type="submit" th:text="#{users.enable}">Activer</button>
+                    <form th:id="'form-disable-' + ${u.id}" th:style="'display:none'"
+                          th:action="@{/users/{id}/status(id=${u.id})}" method="post">
+                        <input type="hidden" name="enabled" value="false">
+                    </form>
+                    <form th:id="'form-enable-' + ${u.id}" th:style="'display:none'"
+                          th:action="@{/users/{id}/status(id=${u.id})}" method="post">
+                        <input type="hidden" name="enabled" value="true">
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${users.empty}">
+                <td colspan="5" class="text-center text-muted" th:text="#{users.empty}">Aucun utilisateur.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <nav th:if="${users.totalPages > 1}" aria-label="Pagination">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${!users.hasPrevious()} ? 'disabled'">
+                <a class="page-link" th:href="@{/users(page=${users.number - 1})}" th:text="#{audit.previous}">Précédent</a>
+            </li>
+            <li class="page-item active"><span class="page-link" th:text="${users.number + 1} + ' / ' + ${users.totalPages}"></span></li>
+            <li class="page-item" th:classappend="${!users.hasNext()} ? 'disabled'">
+                <a class="page-link" th:href="@{/users(page=${users.number + 1})}" th:text="#{audit.next}">Suivant</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+</body>
+</html>

@@ -1,0 +1,7 @@
+spring:
+  thymeleaf:
+    cache: true
+
+logging:
+  level:
+    org.fam.dime: INFO

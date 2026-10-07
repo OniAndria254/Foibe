@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: dime
+  profiles:
+    default: dev
+  config:
+    import: optional:file:.env[.properties]
+  messages:
+    basename: messages_fr
+    encoding: UTF-8
+    fallback-to-system-locale: false
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://127.0.0.1:5432/dime}
+    username: ${DB_USER:dime}
+    password: ${DB_PASSWORD:}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+server:
+  error:
+    whitelabel:
+      enabled: false
+
+dime:
+  page-size: 20
+  import-max-rows: 2000
+  inactivity-alert-months: 6
+  security:
+    initial-admin-username: ${DIME_ADMIN_USERNAME:admin}
+    initial-admin-password: ${DIME_ADMIN_PASSWORD:}

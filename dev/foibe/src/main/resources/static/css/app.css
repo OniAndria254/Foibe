@@ -1,0 +1,58 @@
+:root {
+    --app-primary: #1b3a5b;
+    --app-accent: #2e7d5b;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f4f6f8;
+}
+
+.app-navbar {
+    background-color: var(--app-primary);
+}
+
+.app-brand {
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+.app-main {
+    flex: 1 0 auto;
+}
+
+.app-footer {
+    border-top: 1px solid #e3e7eb;
+    background-color: #fff;
+}
+
+.login-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(160deg, #1b3a5b 0%, #2e7d5b 100%);
+}
+
+.login-wrapper {
+    width: 100%;
+    max-width: 400px;
+    padding: 0 16px;
+}
+
+.app-brand-large {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--app-primary);
+}
+
+table .badge {
+    font-size: 0.75rem;
+}
+
+code {
+    white-space: pre-wrap;
+    word-break: break-all;
+}

@@ -1,0 +1,39 @@
+# Secrets locaux — jamais commis
+.env
+*.env
+
+# Java / Maven
+**/target/
+*.class
+*.jar
+!**/maven-wrapper.jar
+!**/.mvn/wrapper/maven-wrapper.jar
+
+# IntelliJ IDEA
+**/.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# NetBeans / VS Code
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+.vscode/
+
+# Eclipse
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# OS / logs
+Thumbs.db
+.DS_Store
+*.log
+logs/

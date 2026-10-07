@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${title} ?: 'Fanavaozana'">Fanavaozana</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.8/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark app-navbar">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/members}">
+            <span class="app-brand">Fanavaozana</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navMain">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/members}" th:text="#{nav.members}">Membres</a>
+                </li>
+                <li class="nav-item" th:if="${currentUser.canManageMembers()}">
+                    <a class="nav-link" th:href="@{/members/import}" th:text="#{nav.import}">Import</a>
+                </li>
+                <li class="nav-item" th:if="${currentUser.canAudit()}">
+                    <a class="nav-link" th:href="@{/audit}" th:text="#{nav.audit}">Audit</a>
+                </li>
+                <li class="nav-item" th:if="${currentUser.canManageMembers()}">
+                    <a class="nav-link" th:href="@{/users}" th:text="#{nav.users}">Utilisateurs</a>
+                </li>
+            </ul>
+            <span class="navbar-text me-3"
+                  th:if="${currentUser.username != null}"
+                  th:text="|${currentUser.fullName} (${currentUser.role})|"></span>
+            <form th:action="@{/logout}" method="post" th:if="${currentUser.username != null}">
+                <button class="btn btn-outline-light btn-sm" type="submit" th:text="#{nav.logout}">Déconnexion</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<main class="container app-main py-4">
+    <th:block layout:fragment="content"></th:block>
+</main>
+
+<footer class="text-center text-muted p-3 app-footer">
+    <small th:text="#{app.footer}"></small>
+</footer>
+
+<script th:src="@{/webjars/bootstrap/5.3.8/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

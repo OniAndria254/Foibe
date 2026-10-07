@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title th:text="#{members.list.title}">Membres</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h3" th:text="#{members.list.title}">Membres</h1>
+        <div th:if="${canManage}">
+            <a class="btn btn-outline-primary me-2" th:href="@{/members/export}" th:text="#{members.export}">Exporter CSV</a>
+            <a class="btn btn-success" th:href="@{/members/new}" th:text="#{members.new}">Nouveau membre</a>
+        </div>
+    </div>
+
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+
+    <form method="get" th:action="@{/members}" class="row g-2 mb-3">
+        <div class="col-md-5">
+            <input type="text" class="form-control" name="query" th:value="${criteria.query}" th:placeholder="#{members.search}">
+        </div>
+        <div class="col-md-2">
+            <select class="form-select" name="status">
+                <option value="" th:text="#{members.filter.all}">Tous les statuts</option>
+                <option th:each="s : ${statuses}"
+                        th:value="${s.name()}"
+                        th:text="${#messages.msg('member.status.' + s.name())}"
+                        th:selected="${criteria.status == s.name()}"></option>
+            </select>
+        </div>
+        <div class="col-md-2 d-flex align-items-center">
+            <label class="form-check">
+                <input type="checkbox" class="form-check-input" name="sort" value="envelope"
+                       th:checked="${criteria.isSortByEnvelope()}">
+                <span class="form-check-label" th:text="#{members.sort.byEnvelope}">Par n° d'enveloppe</span>
+            </label>
+        </div>
+        <div class="col-md-3 d-flex align-items-center">
+            <button type="submit" class="btn btn-primary" th:text="#{members.filter}">Filtrer</button>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+            <tr>
+                <th th:text="#{member.envelopeNumber}">N°</th>
+                <th th:text="#{member.lastName}">Nom</th>
+                <th th:text="#{member.firstName}">Prénom</th>
+                <th th:text="#{member.status}">Statut</th>
+                <th th:text="#{member.birthDate}">Né(e) le</th>
+                <th th:text="#{member.phone}">Téléphone</th>
+                <th class="text-end" th:text="#{members.actions}">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="m : ${members.content}">
+                <td th:text="${m.envelopeNumber}"></td>
+                <td th:text="${m.lastName}"></td>
+                <td th:text="${m.firstName}"></td>
+                <td>
+                    <span class="badge"
+                          th:classappend="${m.status.name() == 'ACTIVE'} ? 'bg-success' : (${m.status.name() == 'INACTIVE'} ? 'bg-secondary' : 'bg-dark')"
+                          th:text="${#messages.msg('member.status.' + m.status.name())}"></span>
+                </td>
+                <td th:text="${m.birthDate != null} ? ${#temporals.format(m.birthDate, 'dd/MM/yyyy')} : '-'"></td>
+                <td th:text="${m.phone != null} ? ${m.phone} : '-'"></td>
+                <td class="text-end">
+                    <a class="btn btn-sm btn-outline-secondary" th:href="@{/members/{id}(id=${m.id})}" th:text="#{members.detail}">Voir</a>
+                    <a th:if="${canManage}" class="btn btn-sm btn-outline-primary" th:href="@{/members/{id}/edit(id=${m.id})}" th:text="#{members.edit}">Modifier</a>
+                    <a class="btn btn-sm btn-outline-secondary" th:href="@{/receipts/preview/{id}(id=${m.id})}" th:text="#{members.receipt.preview}" target="_blank">Reçu</a>
+                </td>
+            </tr>
+            <tr th:if="${members.empty}">
+                <td colspan="7" class="text-center text-muted" th:text="#{members.empty}">Aucun membre trouvé.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <nav th:if="${members.totalPages > 1}" aria-label="Pagination">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${!members.hasPrevious()} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/members(query=${criteria.query}, status=${criteria.status}, sort=${criteria.sort}, page=${members.number - 1})}"
+                   th:text="#{members.previous}">Précédent</a>
+            </li>
+            <li class="page-item active"><span class="page-link" th:text="${members.number + 1} + ' / ' + ${members.totalPages}"></span></li>
+            <li class="page-item" th:classappend="${!members.hasNext()} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/members(query=${criteria.query}, status=${criteria.status}, sort=${criteria.sort}, page=${members.number + 1})}"
+                   th:text="#{members.next}">Suivant</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+</body>
+</html>

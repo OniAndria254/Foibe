@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title th:text="#{audit.title}">Journal d'audit</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1 class="h3 mb-3" th:text="#{audit.title}">Journal d'audit</h1>
+
+    <form method="get" th:action="@{/audit}" class="row g-2 mb-3">
+        <div class="col-md-2">
+            <select class="form-select" name="entityType">
+                <option value="" th:text="#{audit.filter.allEntities}">Toutes entités</option>
+                <option th:each="e : ${entityTypes}"
+                        th:value="${e.name()}"
+                        th:text="${#messages.msg('audit.entity.' + e.name())}"
+                        th:selected="${filter.entityType?.name() == e.name()}"></option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select class="form-select" name="action">
+                <option value="" th:text="#{audit.filter.allActions}">Toutes actions</option>
+                <option th:each="a : ${actions}"
+                        th:value="${a.name()}"
+                        th:text="${#messages.msg('audit.action.' + a.name())}"
+                        th:selected="${filter.action?.name() == a.name()}"></option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <input type="text" class="form-control" name="username" th:value="${filter.username}"
+                   th:placeholder="#{audit.filter.username}">
+        </div>
+        <div class="col-md-2">
+            <input type="date" class="form-control" name="from" th:value="${filter.from}">
+        </div>
+        <div class="col-md-2">
+            <input type="date" class="form-control" name="to" th:value="${filter.to}">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100" th:text="#{audit.filter}">Filtrer</button>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-sm table-hover">
+            <thead>
+            <tr>
+                <th th:text="#{audit.when}">Date</th>
+                <th th:text="#{audit.user}">Utilisateur</th>
+                <th th:text="#{audit.entity}">Entité</th>
+                <th th:text="#{audit.entityId}">Id</th>
+                <th th:text="#{audit.action}">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="log : ${results.content}">
+                <td th:text="${#temporals.format(log.changedAt, 'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${log.changedBy != null} ? ${log.changedBy} : '-'"></td>
+                <td th:text="${#messages.msg('audit.entity.' + log.entityType.name())}"></td>
+                <td th:text="${log.entityId}"></td>
+                <td>
+                    <span class="badge"
+                          th:classappend="${log.action.name() == 'CREATE'} ? 'bg-success' : (${log.action.name() == 'IMPORT'} ? 'bg-primary' : 'bg-secondary')"
+                          th:text="${#messages.msg('audit.action.' + log.action.name())}"></span>
+                </td>
+            </tr>
+            <tr th:if="${results.empty}">
+                <td colspan="5" class="text-center text-muted" th:text="#{audit.empty}">Aucun événement.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <nav th:if="${results.totalPages > 1}" aria-label="Pagination">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${!results.hasPrevious()} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/audit(entityType=${filter.entityType}, action=${filter.action}, username=${filter.username}, from=${filter.from}, to=${filter.to}, page=${results.number - 1})}"
+                   th:text="#{audit.previous}">Précédent</a>
+            </li>
+            <li class="page-item active"><span class="page-link" th:text="${results.number + 1} + ' / ' + ${results.totalPages}"></span></li>
+            <li class="page-item" th:classappend="${!results.hasNext()} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/audit(entityType=${filter.entityType}, action=${filter.action}, username=${filter.username}, from=${filter.from}, to=${filter.to}, page=${results.number + 1})}"
+                   th:text="#{audit.next}">Suivant</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+</body>
+</html>

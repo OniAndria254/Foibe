@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{receipt.title}">Reçu d'offrande</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.8/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/receipt.css}">
+</head>
+<body class="receipt-page">
+<div class="d-print-none py-3 text-center">
+    <a class="btn btn-primary" href="javascript:window.print()" th:text="#{receipt.print}">Imprimer</a>
+    <a class="btn btn-outline-secondary" th:href="@{/members}" th:text="#{receipt.back}">Retour</a>
+</div>
+
+<div class="receipt">
+    <div class="receipt-header">
+        <div class="receipt-church" th:text="${receipt.churchName}">Église Fanavaozana</div>
+        <div class="receipt-subtitle" th:text="#{receipt.subtitle}">Reçu d'offrande</div>
+    </div>
+
+    <div class="receipt-body">
+        <p class="receipt-line">
+            <span th:text="#{receipt.number.label}">N° envelope :</span>
+            <strong th:text="${receipt.member.envelopeNumber}">12</strong>
+        </p>
+        <p class="receipt-line">
+            <span th:text="#{receipt.member.label}">Membre :</span>
+            <strong th:text="${receipt.member.fullName()}">Nom complet</strong>
+        </p>
+        <p class="receipt-line">
+            <span th:text="#{receipt.date.label}">Date :</span>
+            <strong th:text="${#temporals.format(receipt.issueDate, 'dd/MM/yyyy')}">01/01/2026</strong>
+        </p>
+        <p class="receipt-line">
+            <span th:text="#{receipt.amount.label}">Montant :</span>
+            <em th:text="#{receipt.amount.placeholder}">……… Ariary</em>
+        </p>
+        <p class="receipt-signature">
+            <span th:text="#{receipt.thanks}">Que Dieu vous bénisse.</span>
+        </p>
+    </div>
+
+    <div class="receipt-footer">
+        <div class="receipt-recipient" th:text="#{receipt.recipient}">Signature du trésorier</div>
+    </div>
+</div>
+</body>
+</html>

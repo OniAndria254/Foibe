@@ -1,0 +1,80 @@
+@page {
+    size: 58mm auto;
+    margin: 2mm;
+}
+
+.receipt-page {
+    background: #eee;
+    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+    padding-bottom: 16px;
+}
+
+.receipt {
+    width: 58mm;
+    margin: 8px auto;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 4mm;
+    font-size: 11px;
+    line-height: 1.45;
+    color: #000;
+}
+
+.receipt-header {
+    text-align: center;
+    border-bottom: 1px dashed #000;
+    padding-bottom: 2mm;
+    margin-bottom: 2mm;
+}
+
+.receipt-church {
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+.receipt-subtitle {
+    font-size: 11px;
+}
+
+.receipt-line {
+    margin: 1mm 0;
+}
+
+.receipt-line span {
+    display: inline-block;
+    width: 28mm;
+}
+
+.receipt-signature {
+    margin-top: 3mm;
+    font-style: italic;
+}
+
+.receipt-footer {
+    border-top: 1px dashed #000;
+    margin-top: 4mm;
+    padding-top: 2mm;
+    font-size: 10px;
+}
+
+.receipt-recipient {
+    text-align: right;
+}
+
+@media print {
+    .receipt-page {
+        background: #fff;
+        padding: 0;
+    }
+
+    .receipt {
+        width: auto;
+        margin: 0;
+        border: none;
+    }
+
+    .d-print-none {
+        display: none !important;
+    }
+}

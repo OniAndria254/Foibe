@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title th:text="#{members.detail}">Membre</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h3">
+            <span th:text="${member.fullName()}">Nom complet</span>
+            <span class="badge fs-6"
+                  th:classappend="${member.status.name() == 'ACTIVE'} ? 'bg-success' : (${member.status.name() == 'INACTIVE'} ? 'bg-secondary' : 'bg-dark')"
+                  th:text="${#messages.msg('member.status.' + member.status.name())}"></span>
+        </h1>
+        <div>
+            <a class="btn btn-outline-primary" th:href="@{/members}" th:text="#{members.backToList}">Retour</a>
+            <a th:if="${canManage}" class="btn btn-primary" th:href="@{/members/{id}/edit(id=${member.id})}" th:text="#{members.edit}">Modifier</a>
+            <a class="btn btn-outline-secondary" th:href="@{/receipts/preview/{id}(id=${member.id})}" target="_blank" th:text="#{members.receipt.preview}">Reçu</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4" th:text="#{member.envelopeNumber}">N° enveloppe</dt>
+                        <dd class="col-sm-8" th:text="${member.envelopeNumber}"></dd>
+
+                        <dt class="col-sm-4" th:text="#{member.lastName}">Nom</dt>
+                        <dd class="col-sm-8" th:text="${member.lastName}"></dd>
+
+                        <dt class="col-sm-4" th:text="#{member.firstName}">Prénom</dt>
+                        <dd class="col-sm-8" th:text="${member.firstName}"></dd>
+
+                        <dt class="col-sm-4" th:text="#{member.sex}">Sexe</dt>
+                        <dd class="col-sm-8" th:text="${member.sex != null} ? ${#messages.msg('member.sex.' + member.sex.name())} : '-'"></dd>
+
+                        <dt class="col-sm-4" th:text="#{member.birthDate}">Né(e) le</dt>
+                        <dd class="col-sm-8" th:text="${member.birthDate != null} ? ${#temporals.format(member.birthDate, 'dd/MM/yyyy')} : '-'"></dd>
+
+                        <dt class="col-sm-4" th:text="#{member.phone}">Téléphone</dt>
+                        <dd class="col-sm-8" th:text="${member.phone != null} ? ${member.phone} : '-'"></dd>
+
+                        <dt class="col-sm-4" th:text="#{member.address}">Adresse</dt>
+                        <dd class="col-sm-8" th:text="${member.address != null} ? ${member.address} : '-'"></dd>
+
+                        <dt class="col-sm-4" th:text="#{member.joinedOn}">Date d'inscription</dt>
+                        <dd class="col-sm-8" th:text="${#temporals.format(member.joinedOn, 'dd/MM/yyyy')}"></dd>
+
+                        <dt class="col-sm-4" th:text="#{member.notes}">Notes</dt>
+                        <dd class="col-sm-8" th:text="${member.notes != null} ? ${member.notes} : '-'"></dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div th:if="${canManage}" class="card">
+                <div class="card-header" th:text="#{members.changeStatus}">Changer le statut</div>
+                <div class="card-body d-flex gap-2">
+                    <form th:action="@{/members/{id}/status(id=${member.id})}" method="post" th:if="${member.status.name() != 'ACTIVE'}">
+                        <input type="hidden" name="status" value="ACTIVE">
+                        <button class="btn btn-success" type="submit" th:text="#{member.status.action.ACTIVE}">Activer</button>
+                    </form>
+                    <form th:action="@{/members/{id}/status(id=${member.id})}" method="post" th:if="${member.status.name() != 'INACTIVE'}">
+                        <input type="hidden" name="status" value="INACTIVE">
+                        <button class="btn btn-warning" type="submit" th:text="#{member.status.action.INACTIVE}">Désactiver</button>
+                    </form>
+                    <form th:action="@{/members/{id}/status(id=${member.id})}" method="post"
+                          th:if="${member.status.name() != 'ARCHIVED'}"
+                          onsubmit="return confirm('Archiver ce membre ?');">
+                        <input type="hidden" name="status" value="ARCHIVED">
+                        <button class="btn btn-outline-dark" type="submit" th:text="#{member.status.action.ARCHIVED}">Archiver</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

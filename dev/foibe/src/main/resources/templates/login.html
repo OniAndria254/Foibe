@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="#{login.title}">Connexion</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.8/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="login-body">
+<div class="login-wrapper">
+    <div class="card shadow-sm login-card">
+        <div class="card-body p-4">
+            <h1 class="h4 text-center mb-4">
+                <span class="app-brand-large">Fanavaozana</span><br>
+                <small class="text-muted" th:text="#{login.subtitle}">Gestion des membres</small>
+            </h1>
+
+            <div class="alert alert-danger" th:if="${param.error}" th:text="#{login.error}">
+                Identifiants incorrects
+            </div>
+            <div class="alert alert-success" th:if="${param.logout}" th:text="#{login.loggedOut}">
+                Vous avez été déconnecté.
+            </div>
+
+            <form th:action="@{/login}" method="post">
+                <div class="mb-3">
+                    <label for="username" class="form-label" th:text="#{login.username}">Identifiant</label>
+                    <input id="username" name="username" class="form-control" autofocus required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label" th:text="#{login.password}">Mot de passe</label>
+                    <input id="password" name="password" type="password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100" th:text="#{login.submit}">Se connecter</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

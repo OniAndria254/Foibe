@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title th:text="#{import.title}">Import des membres</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1 class="h3 mb-3" th:text="#{import.title}">Import des membres</h1>
+
+    <div class="card">
+        <div class="card-body">
+            <p class="text-muted" th:text="#{import.help}">
+                Fichier CSV (UTF-8). Colonnes reconnues : nom, prénom, sexe, date de naissance,
+                téléphone, adresse, statut, date d'inscription, notes.
+            </p>
+            <form th:action="@{/members/import}" method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <input type="file" name="file" accept=".csv,text/csv" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary" th:text="#{import.analyse}">Analyser le fichier</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title th:text="#{import.report.title}">Rapport d'import</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h3" th:text="#{import.report.title}">Rapport d'import</h1>
+        <span class="badge fs-6"
+              th:classappend="${report.status.name() == 'PENDING'} ? 'bg-primary' : (${report.status.name() == 'APPLIED'} ? 'bg-success' : 'bg-secondary')"
+              th:text="${#messages.msg(report.statusLabel)}"></span>
+    </div>
+
+    <div th:if="${importStarted}" class="alert alert-info" th:text="#{import.flash.analysed}"></div>
+    <div th:if="${importApplied}" class="alert alert-success"
+         th:text="#{import.flash.applied(${assignedFrom}, ${assignedTo})}"></div>
+    <div th:if="${importCancelled}" class="alert alert-secondary" th:text="#{import.flash.cancelled}"></div>
+
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <div class="display-6" th:text="${report.totalRows}"></div>
+                    <div class="text-muted" th:text="#{import.stats.total}">Lignes</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center border-success">
+                <div class="card-body">
+                    <div class="display-6 text-success" th:text="${report.validRows}"></div>
+                    <div class="text-muted" th:text="#{import.stats.valid}">Valides</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center border-danger">
+                <div class="card-body">
+                    <div class="display-6 text-danger" th:text="${report.errorRows}"></div>
+                    <div class="text-muted" th:text="#{import.stats.errors}">Erreurs</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <div class="display-6" th:text="|${report.assignedFrom != null ? report.assignedFrom : '–'} – ${report.assignedTo != null ? report.assignedTo : '…'}|"></div>
+                    <div class="text-muted" th:text="#{import.stats.envelopes}">N° d'enveloppes</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <span class="text-muted me-2" th:text="#{import.file} + ' :'"></span>
+        <span th:text="${report.filename}"></span>
+        <span class="ms-3 text-muted" th:if="${report.startedBy != null}"
+              th:text="#{import.by(${report.startedBy})}"></span>
+    </div>
+
+    <div th:if="${!report.ignoredColumns.empty}" class="alert alert-warning py-2" th:text="#{import.ignored(${report.ignoredColumns})}">
+    </div>
+
+    <div th:if="${!report.previewRows.empty}" class="card mb-3">
+        <div class="card-header" th:text="#{import.preview.title}">Aperçu des membres à créer</div>
+        <div class="table-responsive">
+            <table class="table table-sm mb-0">
+                <thead>
+                <tr>
+                    <th th:text="#{import.preview.envelope}">N°</th>
+                    <th th:text="#{import.preview.name}">Nom</th>
+                    <th th:text="#{import.preview.line}">Ligne</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="row : ${report.previewRows}">
+                    <td th:text="${row.envelopeNumber}"></td>
+                    <td th:text="|${row.lastName} ${row.firstName}|"></td>
+                    <td th:text="${row.lineNumber}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div th:if="${!report.rowErrors.empty}" class="card mb-3">
+        <div class="card-header text-danger" th:text="#{import.errors.title}">Erreurs détectées</div>
+        <div class="table-responsive">
+            <table class="table table-sm mb-0">
+                <thead>
+                <tr>
+                    <th th:text="#{import.errors.line}">Ligne</th>
+                    <th th:text="#{import.errors.message}">Message</th>
+                    <th th:text="#{import.errors.content}">Contenu</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="err : ${report.rowErrors}">
+                    <td th:text="${err.lineNumber}"></td>
+                    <td th:text="${err.message}"></td>
+                    <td class="text-muted small"><code th:text="${err.rawLine}"></code></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div th:if="${report.status.name() == 'PENDING' && !report.previewRows.empty}" class="d-flex gap-2">
+        <form th:action="@{/members/import/report/{id}/apply(id=${report.id})}" method="post"
+              onsubmit="return confirm('Appliquer cet import ?');">
+            <button type="submit" class="btn btn-success" th:text="#{import.apply}">Appliquer l'import</button>
+        </form>
+        <form th:action="@{/members/import/report/{id}/cancel(id=${report.id})}" method="post"
+              onsubmit="return confirm('Annuler cet import ?');">
+            <button type="submit" class="btn btn-outline-secondary" th:text="#{import.cancel}">Annuler</button>
+        </form>
+    </div>
+    <a th:if="${report.status.name() == 'PENDING' && report.previewRows.empty}" class="btn btn-outline-danger"
+       th:href="@{/members/import}" th:text="#{import.noValidRows}">Aucune ligne valide — recommencer</a>
+</div>
+</body>
+</html>
