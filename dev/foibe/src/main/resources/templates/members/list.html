@@ -10,6 +10,7 @@
         <h1 class="h3" th:text="#{members.list.title}">Membres</h1>
         <div th:if="${canManage}">
             <a class="btn btn-outline-primary me-2" th:href="@{/members/export}" th:text="#{members.export}">Exporter CSV</a>
+            <a class="btn btn-outline-success me-2" th:href="@{/members/export/xlsx(query=${criteria.query}, status=${criteria.status}, sort=${criteria.sort})}" th:text="#{members.exportXlsx}">Exporter Excel</a>
             <a class="btn btn-success" th:href="@{/members/new}" th:text="#{members.new}">Nouveau membre</a>
         </div>
     </div>

@@ -33,7 +33,9 @@ body {
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    background: linear-gradient(160deg, #1b3a5b 0%, #2e7d5b 100%);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
 
 .login-wrapper {

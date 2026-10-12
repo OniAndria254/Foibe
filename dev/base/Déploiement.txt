@@ -1,0 +1,51 @@
+Prérequis sur le PC de l'église
+- Windows 10/11 64-bit
+- JRE 17 (Eclipse Temurin, .msi) — ex. C:\Program Files\Eclipse Adoptium\jre-17.x\bin\java.exe
+- PostgreSQL 15 (installeur EDB, service Windows automatique)
+- Dossier de déploiement C:\dime\
+1. Sur ta machine de dev — produire le jar
+JAVA_HOME="C:\Program Files\Java\jdk-17" mvn -DskipTests clean package
+→ dev/foibe/target/dime-0.0.1-SNAPSHOT.jar (fat jar autonome). Copier ce seul fichier sur le PC.
+2. PC église — JRE + PostgreSQL
+1. Installer Temurin JRE 17 (chemin retenu pour le script).
+2. Installer PostgreSQL 15 (mot de passe superuser postgres).
+3. Créer la base (base vide)
+En superutilisateur postgres (psql de C:\Program Files\PostgreSQL\15\bin\psql.exe) — version minimale mono-poste :
+CREATE ROLE dime LOGIN PASSWORD '<mdp_base>';
+CREATE DATABASE dime OWNER dime;
+(Flyway créera toutes les tables au 1er démarrage ; pas besoin de dime_test.) Alternative : le script existant dev/base/00_create_role_and_databases.sql (crée aussi dime_test, inutile ici).
+4. Dossier C:\dime\ : jar + .env + script
+- C:\dime\dime-0.0.1-SNAPSHOT.jar
+- C:\dime\.env (copie de dev/foibe/.env.example) :
+DB_URL=jdbc:postgresql://127.0.0.1:5432/dime
+DB_USER=dime
+DB_PASSWORD=<mdp_base>
+DIME_ADMIN_USERNAME=admin
+DIME_ADMIN_PASSWORD=<mdp_admin_fort>
+- C:\dime\start-dime.bat :
+@echo off
+cd /d C:\dime
+if not exist logs mkdir logs
+"C:\Program Files\Eclipse Adoptium\jre-17.x\bin\java.exe" -jar dime-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod --server.address=127.0.0.1 >> logs\dime.log 2>&1
+--server.address=127.0.0.1 = écoute localhost uniquement ; profil prod = cache + logs INFO.
+5. Premier lancement (recette)
+1. Double-clic sur start-dime.bat (ou java -jar ... manuel).
+2. Vérifier le log : migrations Flyway V1→V6 + seed église « Foibe Ambohimarina », puis création admin.
+3. Ouvrir http://localhost:8080 → login admin / mdp .env → tester import/export/reçu.
+4. Créer les comptes réels, changer les mots de passe.
+6. Démarrage automatique (Planificateur de tâches)
+Console élevée :
+schtasks /Create /TN "Dime App" /TR "C:\dime\start-dime.bat" /SC ONLOGON /RL HIGHEST /F
+Démarre à l'ouverture de session. (Pour masquer la fenêtre : planifier avec « exécuter même si l'utilisateur n'est pas connecté », ou via un petit wrapper wscript.)
+7. Sauvegardes
+Tâche planifiée quotidienne :
+"C:\Program Files\PostgreSQL\15\bin\pg_dump.exe" -h 127.0.0.1 -U dime -Fc dime -f "D:\backup\dime.dump"
+Copier régulièrement vers un disque externe/cloud.
+8. Après déploiement
+- Ne rien ouvrir au pare-feu (mono-poste).
+- Vérifier l'imprimante (aperçu reçu = impression navigateur).
+- Rappel : les secrets .env restent locaux, jamais committés.
+Fichiers que je peux préparer (quand tu sors du mode plan)
+1. deploy/ dans le repo : start-dime.bat, register-task.bat, .env.prod.example, et un DEPLOIEMENT.md reprenant ces étapes.
+2. (Option) script pg_dump + enregistrement des tâches planifiées (app + sauvegarde).
+Dis-moi si tu veux que je crée ce dossier deploy/ (et si oui, avec ou sans les scripts de sauvegarde), et je l'implémenterai.

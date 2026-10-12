@@ -79,6 +79,18 @@ public class MemberService {
 				.toList();
 	}
 
+	@Transactional(readOnly = true)
+	public List<MemberResponse> findAllForExport(MemberSearchCriteria criteria) {
+		Long churchId = churchService.defaultChurchId();
+		Sort sort = criteria.isSortByEnvelope()
+				? Sort.by(Sort.Direction.ASC, "envelopeNumber")
+				: Sort.by(Sort.Direction.ASC, "lastName", "firstName");
+		return memberRepository.findAll(buildSpecification(churchId, criteria), sort)
+				.stream()
+				.map(MemberMapper::toResponse)
+				.toList();
+	}
+
 	@Transactional
 	public MemberResponse create(CreateMemberRequest request) {
 		Long churchId = churchService.defaultChurchId();
@@ -191,7 +203,7 @@ public class MemberService {
 			String address,
 			LocalDate joinedOn,
 			String notes) {
-		member.setLastName(lastName == null ? null : lastName.trim());
+		member.setLastName(lastName == null ? null : lastName.trim().toUpperCase());
 		member.setFirstName(firstName == null ? null : firstName.trim());
 		member.setSex(sex);
 		member.setBirthDate(birthDate);

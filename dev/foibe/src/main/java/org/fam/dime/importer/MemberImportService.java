@@ -148,7 +148,7 @@ public class MemberImportService {
 			Member member = new Member();
 			member.setChurchId(churchId);
 			member.setEnvelopeNumber(number++);
-			member.setLastName(row.lastName());
+			member.setLastName(row.lastName().toUpperCase());
 			member.setFirstName(row.firstName());
 			member.setSex(row.sex());
 			member.setBirthDate(row.birthDate());
@@ -199,7 +199,7 @@ public class MemberImportService {
 		List<CsvRowError> errors = new ArrayList<>(parsed.rowErrors());
 		Map<String, Integer> knownEnvelopes = new HashMap<>();
 		memberRepository.findByChurchId(churchId).forEach(member -> knownEnvelopes.put(
-				(member.getLastName() + '|' + member.getFirstName()).toLowerCase(Locale.ROOT),
+				(member.getLastName().toUpperCase() + '|' + member.getFirstName()).toLowerCase(Locale.ROOT),
 				member.getEnvelopeNumber()));
 
 		Set<String> seenInFile = new HashSet<>();

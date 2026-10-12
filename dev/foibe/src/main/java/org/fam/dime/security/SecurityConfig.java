@@ -33,7 +33,8 @@ public class SecurityConfig {
 								"/members/import",
 								"/members/import/*/apply",
 								"/members/import/*/cancel",
-								"/members/export")
+								"/members/export",
+								"/members/export/xlsx")
 						.hasAnyRole(UserRole.RESPONSIBLE.name(), UserRole.ADMIN.name())
 						.anyRequest().authenticated())
 				.formLogin(form -> form

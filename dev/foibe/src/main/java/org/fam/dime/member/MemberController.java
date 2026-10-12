@@ -153,6 +153,19 @@ public class MemberController {
 				.body(csv);
 	}
 
+	@GetMapping("/export/xlsx")
+	public ResponseEntity<byte[]> exportXlsx(@ModelAttribute("criteria") MemberSearchCriteria criteria) {
+		byte[] xlsx = MemberXlsxExporter.export(
+				memberService.findAllForExport(criteria),
+				message("member.envelopeNumber"),
+				message("member.lastName"),
+				message("member.firstName"));
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"membres.xlsx\"")
+				.contentType(new MediaType("application", "vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+				.body(xlsx);
+	}
+
 	private UpdateMemberRequest toUpdateRequest(MemberResponse member) {
 		UpdateMemberRequest form = new UpdateMemberRequest();
 		form.setEnvelopeNumber(member.envelopeNumber());
