@@ -22,6 +22,7 @@ public class SecurityConfig {
 								"/error",
 								"/css/**",
 								"/js/**",
+								"/images/**",
 								"/webjars/**")
 						.permitAll()
 						.requestMatchers("/users/**", "/audit/**")

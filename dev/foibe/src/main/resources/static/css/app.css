@@ -33,8 +33,10 @@ body {
     align-items: center;
     justify-content: center;
     min-height: 100vh;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), url("/images/foibe.jpeg");
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
     background-attachment: fixed;
 }
 
