@@ -1,0 +1,6 @@
+BEGIN;
+DELETE FROM import_batches;            
+DELETE FROM members;                  
+DELETE FROM audit_logs;                
+UPDATE churches SET envelope_next_number = 1;
+COMMIT;

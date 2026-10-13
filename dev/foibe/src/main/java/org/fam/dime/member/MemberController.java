@@ -148,7 +148,8 @@ public class MemberController {
 	public ResponseEntity<byte[]> export() {
 		byte[] csv = MemberCsvExporter.export(memberService.findAllForExport());
 		return ResponseEntity.ok()
-				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"membres.csv\"")
+				.header(HttpHeaders.CONTENT_DISPOSITION,
+						"attachment; filename=\"" + MemberExportFileNames.memberExport("csv") + "\"")
 				.contentType(new MediaType("text", "csv", java.nio.charset.StandardCharsets.UTF_8))
 				.body(csv);
 	}
@@ -161,7 +162,8 @@ public class MemberController {
 				message("member.lastName"),
 				message("member.firstName"));
 		return ResponseEntity.ok()
-				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"membres.xlsx\"")
+				.header(HttpHeaders.CONTENT_DISPOSITION,
+						"attachment; filename=\"" + MemberExportFileNames.memberExport("xlsx") + "\"")
 				.contentType(new MediaType("application", "vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
 				.body(xlsx);
 	}

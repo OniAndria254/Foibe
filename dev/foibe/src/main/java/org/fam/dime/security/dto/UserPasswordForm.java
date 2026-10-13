@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 public class UserPasswordForm {
 
 	@NotBlank(message = "user.password.required")
-	@Size(min = 8, max = 72, message = "user.password.invalid")
+	@Size(min = 5, max = 72, message = "user.password.invalid")
 	private String password;
 
 	public String getPassword() {

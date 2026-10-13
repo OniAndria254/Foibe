@@ -203,7 +203,7 @@ public class MemberService {
 			String address,
 			LocalDate joinedOn,
 			String notes) {
-		member.setLastName(lastName == null ? null : lastName.trim().toUpperCase());
+		member.setLastName(lastName == null ? null : lastName.trim());
 		member.setFirstName(firstName == null ? null : firstName.trim());
 		member.setSex(sex);
 		member.setBirthDate(birthDate);

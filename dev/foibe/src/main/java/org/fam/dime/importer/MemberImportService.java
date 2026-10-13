@@ -148,7 +148,7 @@ public class MemberImportService {
 			Member member = new Member();
 			member.setChurchId(churchId);
 			member.setEnvelopeNumber(number++);
-			member.setLastName(row.lastName().toUpperCase());
+			member.setLastName(row.lastName());
 			member.setFirstName(row.firstName());
 			member.setSex(row.sex());
 			member.setBirthDate(row.birthDate());

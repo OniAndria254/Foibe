@@ -13,7 +13,7 @@ public class UserForm {
 	private String username;
 
 	@NotBlank(message = "user.password.required")
-	@Size(min = 8, max = 72, message = "user.password.invalid")
+	@Size(min = 5, max = 72, message = "user.password.invalid")
 	private String password;
 
 	@NotBlank(message = "user.fullName.required")
